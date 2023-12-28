@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_c8fa77fe_c468_442d_9510_9d9adf5cff7e_Output_Payload = Array<{  mailing_city?: String,   mailing_country?: String,   mailing_state?: String,   phone?: String,   last_name: String,   mailing_postal_code?: String | Null,   id: String,   first_name?: String,   email?: String,   _?: Any} {"description": "get contact response"}>
+

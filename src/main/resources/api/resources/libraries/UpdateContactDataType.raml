@@ -1,0 +1,60 @@
+#%RAML 1.0 Library
+types:
+ update_contact_request:
+    description: update contact response
+    type: object
+    properties:
+      mailing_city:
+        description: city
+        type: string
+        required: false
+     
+      mailing_country:
+        description: country
+        type: string
+        required: false
+      email:
+         description: email
+         type: string
+         required: false
+      first_name:
+        description: firstname
+        type: string
+        required: false
+      last_name:
+        description: lastname
+        type: string
+        required: true
+      phone:
+        description: phonenumber
+        type: string
+        required: false
+      mailing_postal_code:
+        description: postalcode
+        type: string
+        required: false
+      mailing_state:
+        description: state
+        type: string
+        required: false
+      
+ 
+ update_contact_response:
+  properties:
+      is_success :
+        description: Success
+        type: boolean
+        required: true
+      response:
+        type: array
+        items:
+          type: object
+          properties:
+           payload:
+            type: object
+            properties:
+              success: boolean
+              id: string
+              errors: array
+
+  

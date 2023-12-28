@@ -1,0 +1,14 @@
+%dw 2.0
+
+type auto_d8888cc2_69e7_4968_86a1_c2a803ec28e8_Input_Payload = {
+  mailing_city?: String, 
+  mailing_country?: String, 
+  mailing_state?: String, 
+  phone?: String, 
+  last_name: String, 
+  mailing_postal_code?: String, 
+  first_name?: String, 
+  email?: String, 
+  _?: Any
+} {"description": "update contact response"}
+

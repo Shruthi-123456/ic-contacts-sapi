@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_2ed827cd_a47a_4f12_857b_928320fb088c_Input_Payload = Array<{  mailing_city?: String,   mailing_country?: String,   mailing_state?: String,   phone?: String,   last_name: String,   mailing_postal_code?: String,   first_name?: String,   email?: String,   _?: Any} {"description": "post the contact"}>
+

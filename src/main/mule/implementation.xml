@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="get-all-contacts-implementation-flow" doc:id="c8fa77fe-c468-442d-9510-9d9adf5cff7e" >
+		<logger level="INFO" doc:name="get-all-contacts-implementation-Flow Started " doc:id="6460cb14-3553-4dc8-92b3-1c3c8c35c98d" message="get-all-contacts-implementation-Flow Started " />
+		<salesforce:query doc:id="2ea6f111-586b-4652-a4e1-0864ee8c64a6" config-ref="Salesforce_Config" doc:name="Get All Contacts From Salesforce" >
+			<salesforce:salesforce-query ><![CDATA[SELECT Email,FirstName,Id,LastName,MailingCity,MailingCountry,MailingPostalCode,MailingState,Phone FROM Contact]]></salesforce:salesforce-query>
+		</salesforce:query>
+		<ee:transform doc:name="DW Set To Get All Contacts Respnose Transform" doc:id="59d2c79e-9f25-485a-ab43-2df922ea860b" >
+			<ee:message >
+				<ee:set-payload resource="dwlScripts/get-all-contact-response.dwl" />
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="get-all-contact-implementation-Flow Ended" doc:id="e28af163-07e0-4a97-978b-3ff73caf07d3" message="get-all-contact-implementation-Flow Ended" />
+	</sub-flow>
+	<sub-flow name="get-contact-by-id-implementation-flow" doc:id="b2095158-eb16-47f1-9e89-eed2e2e67b44" >
+		<logger level="INFO" doc:name="get-contact-by-id-implementation Flow Started" doc:id="05e21051-5440-477e-adfa-3f624539544e" message="get-contact-by-id-implementation Flow Started" />
+		<salesforce:query doc:name="Get Contact From Salesforce Based On Id" doc:id="f91f0671-7082-4dd4-900f-f18005baf316" config-ref="Salesforce_Config" >
+			<salesforce:salesforce-query ><![CDATA[SELECT Email,FirstName,Id,LastName,MailingCity,MailingCountry,MailingPostalCode,MailingState,Phone FROM Contact where Id=':id']]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[{
+	"id" : attributes.uriParams.id
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform doc:name="DW Set To Get All Contacts Response Transform" doc:id="012021a0-0d73-4a4a-b051-28b6cdb3f8e3" >
+			<ee:message >
+				<ee:set-payload resource="dwlScripts/get-contact-by-id-response.dwl" />
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="get-contact-by-id-implementation Flow Ended" doc:id="752669c0-ea13-4eb6-bcdf-496862d09fff" message="get-contact-by-id-implementation Flow Ended" />
+	</sub-flow>
+	<sub-flow name="create-contact-implementation-flow" doc:id="2ed827cd-a47a-4f12-857b-928320fb088c" >
+		<logger level="INFO" doc:name="create-contact-implementation Flow Started" doc:id="fc0f3dc9-a1cb-483d-a3da-24f4220cae1e" message="create-contact-implementation Flow Started" />
+		<ee:transform doc:name="DW Set To Create Contact Request Transform" doc:id="56ea8866-c631-4210-bc42-b4eb6dad7f2f" >
+			<ee:message >
+				<ee:set-payload resource="dwlScripts/create-contact-request.dwl" />
+			</ee:message>
+		</ee:transform>
+		<salesforce:create type="Contact" doc:name="Create Contact On Salesforce" doc:id="23a26b97-4a17-4205-bfce-1785840e3de8" config-ref="Salesforce_Config" />
+		<ee:transform doc:name="DW Set To Create Contact Response Transform" doc:id="ee000eb4-bda4-4918-a5fc-c8a016d06a20" >
+			<ee:message >
+				<ee:set-payload resource="dwlScripts/create-contact-response.dwl" />
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="create-contact-implementation Flow Ended" doc:id="4b1cafd0-ea1c-4e73-80e2-3d83aa3363b4" message="create-contact-implementation Flow Ended" />
+	</sub-flow>
+	<sub-flow name="update-contact-implementation-flow" doc:id="d8888cc2-69e7-4968-86a1-c2a803ec28e8" >
+		<logger level="INFO" doc:name="update-contact-implementation Flow Started" doc:id="64db69cd-12cb-45fa-9c15-02c3eecfa662" message="update-contact-implementation Flow Started" />
+		<ee:transform doc:name="Set Variable To Store Id" doc:id="4c04ac68-7648-470c-83f6-6068f175fefa" >
+			<ee:variables >
+				<ee:set-variable variableName="id" ><![CDATA[attributes.uriParams.'id']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<ee:transform doc:name="DW Scripts To Update Contact Request Transform" doc:id="003fb860-8085-4238-a845-5f399fcf1246" >
+			<ee:message >
+				<ee:set-payload resource="dwlScripts/update-contact-request.dwl" />
+			</ee:message>
+			<ee:variables />
+		</ee:transform>
+		<salesforce:update type="Contact" doc:name="Update Contact On Salesforce" doc:id="5c506704-ec09-4868-ac0b-c4cd4f45217b" config-ref="Salesforce_Config" />
+		<ee:transform doc:name="DW Set To Update Contact Response Transform" doc:id="7a0c1b41-a1d2-47e9-9af6-9795eb5a9e50" >
+			<ee:message >
+				<ee:set-payload resource="dwlScripts/update-contact-response.dwl" />
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="update-contact-implementation Flow Ended" doc:id="01300f08-17ae-4c21-8f32-d3911586570d" message="update-contact-implementation Flow Ended" />
+	</sub-flow>
+	<sub-flow name="delete-contact-implementation-flow" doc:id="f5cf1783-edfa-4a48-a67c-ab933c799d92" >
+		<logger level="INFO" doc:name="delete-contact-implementation Flow Started" doc:id="aec56ba6-2ef5-43d6-8ad7-dd324c3059dc" message="delete-contact-implementation Flow Started" />
+		<ee:transform doc:name="Set Variable To Store Id" doc:id="e6b0fa66-f30e-43d9-9b9c-d49e279fb0d8" >
+			<ee:variables >
+				<ee:set-variable variableName="id" ><![CDATA[attributes.uriParams.'id']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<salesforce:delete doc:name="Delete Contact From Salesforce" doc:id="e4c9fa50-2d34-4c55-86c1-f3abed9cff96" config-ref="Salesforce_Config" >
+			<salesforce:ids ><![CDATA[#[[vars.id]]]]></salesforce:ids>
+		</salesforce:delete>
+		<ee:transform doc:name="DW Set To Delete Contact Response Transform" doc:id="64e004db-2586-4bf7-85cc-267bcbe1f9fd" >
+			<ee:message >
+				<ee:set-payload resource="dwlScripts/delete-contact-response.dwl" />
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="delete-contact-implementation Flow Ended" doc:id="f5faa034-8293-4fb0-a940-fdb5e9424883" message="delete-contact-implementation Flow Ended" />
+	</sub-flow>
+</mule>

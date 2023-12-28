@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+	 <http:listener-config name="ic-contact-sapi-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="${https.port}" protocol="HTTPS">
+			<tls:context >
+				<tls:key-store type="jks" path="keystore\server-keystore.jks" keyPassword="${secure::ksc.keypassword}" password="${secure::ksc.password}" />
+			</tls:context>
+		</http:listener-connection>
+    </http:listener-config>
+    <apikit:config name="ic-contact-sapi-config" api="ic-contact-sapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="b45b2328-f534-4e22-bf07-62bc26b202e6" >
+		<salesforce:basic-connection username="${secure::sfc.username}" password="${secure::sfc.password}" securityToken="${secure::sfc.securitytoken}" />
+	</salesforce:sfdc-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="88c442af-41d9-4b50-ac1d-7c4d26a255af" file="properties\config-common.yaml" />
+	<configuration-properties doc:name="Configuration properties" doc:id="3ebb3386-c622-45dd-825f-590a928ec034" file="properties\config-qa.yaml" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="bcc7e89e-f0f9-4c15-a958-3f1cb70f1b83" file="properties\config-qa.yaml" key="ghjkiuytrtfgfgty" />
+	<api-gateway:autodiscovery apiId="${secure::autodiscovery.api.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="0ef5bc44-080c-457f-aaab-b81e50c50843" flowRef="ic-contact-sapi-main" />
+	<configuration doc:name="Configuration" doc:id="2c55d27e-52b4-4701-886e-b4f8c5a991b6" defaultErrorHandler-ref="Error_Handler" />
+	
+</mule>

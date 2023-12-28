@@ -1,0 +1,78 @@
+#%RAML 1.0
+title: ic-contact-sapi
+description: An API that is used to integrate with salesforce contact object
+version: v1
+protocols: [HTTP,HTTPS]
+mediaType: 
+  - application/json
+
+traits:
+  client-id-required:
+      headers:
+        client_id:
+          type: string
+        client_secret:
+          type: string
+
+  
+resourceTypes:
+  collections: !include /resourceTypes/AllCollections.raml
+
+uses:
+  errorsDataType: /resources/libraries/ErrorsDataType.raml
+  getContactDataType: /resources/libraries/GetContactDataType.raml
+  postContactDataType: /resources/libraries/PostContactDataType.raml
+  updateContactDataType: /resources/libraries/UpdateContactDataType.raml
+  deleteContactDataType: /resources/libraries/DeleteContactDataType.raml
+
+/contact:
+
+   type:
+     collections:
+       get-response-example: !include /examples/responses/getAllContactsResponseExample.json
+       get-response-schema:   getContactDataType.get_contact_response
+       post-request-schema:  postContactDataType.post_contact_request
+       post-request-example: !include /examples/requests/postContactRequestExample.json
+       post-response-schema: postContactDataType.post_contact_response
+       post-response-example: !include /examples/responses/postContactResponseExample.json
+       errors-schema: errorsDataType.error
+
+
+   get:
+     is:
+      - client-id-required
+   post:
+     is:
+      - client-id-required
+    
+
+
+   /{id}:
+     type:
+       collections: 
+         get-response-schema: getContactDataType.get_contact_response
+         get-response-example: !include /examples/responses/getContactDetailsBySingleIdResponseExample.json
+         put-request-schema: updateContactDataType.update_contact_request
+         put-request-example: !include /examples/requests/updateContactRequestExample.json
+         put-response-schema: updateContactDataType.update_contact_response
+         put-response-example: !include /examples/responses/updateContactResponseExample.json
+
+         delete-response-schema: deleteContactDataType.delete_contact_response
+         delete-response-example: !include /examples/responses/deleteContactResponseExample.json
+         errors-schema: errorsDataType.error
+
+         
+    
+      
+     
+   
+     get:
+       is:
+        - client-id-required
+     put:
+       is:
+        - client-id-required
+     delete:
+       is:
+        - client-id-required
+      
